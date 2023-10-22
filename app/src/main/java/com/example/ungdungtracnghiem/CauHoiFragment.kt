@@ -1,6 +1,10 @@
 package com.example.ungdungtracnghiem
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.content.DialogInterface.OnClickListener
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.RadioButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
@@ -31,7 +36,17 @@ class CauHoiFragment : Fragment() {
     private var cauhoi: Question? = null
     private val shareViewModel : ShareViewModel by activityViewModels()
 
-    private var radioAdapter = RadioButtonAdapter()
+    private var radioAdapter = RadioButtonAdapter(::onClick)
+    private var userAnsQuestion = -1
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun onClick(position: Int) {
+
+        userAnsQuestion = position
+        rcvQuestion?.post {
+            radioAdapter.notifyDataSetChanged()
+        }
+    }
 
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,13 +62,12 @@ class CauHoiFragment : Fragment() {
     var textViewCauHoi: TextView? = null
 
     var rcvQuestion: RecyclerView ?= null
-    var rb1: RadioButton? = null
-    var rb2: RadioButton? = null
-    var rb3: RadioButton? = null
-    var rb4: RadioButton? = null
 
     var btnCauSau: Button ?= null
     var btnCauTraLoi: Button ?= null
+    var btnNopBai: Button ?= null
+
+
     var listQuestion = mutableListOf<String>()
 
 
@@ -71,12 +85,13 @@ class CauHoiFragment : Fragment() {
 
         btnCauSau = view.findViewById(R.id.btn_causau)
         btnCauTraLoi = view.findViewById(R.id.btn_Traloi)
-        shareViewModel.hashUserChoice[cauhoi?.questionNumber]?.let {
+        btnNopBai = view.findViewById(R.id.btn_nopbai)
 
-        }
+        println("${shareViewModel.hashUserChoice}")
+
 
         cauhoi?.let {
-            textViewCauHoi?.setText(it.cauHoi)
+            textViewCauHoi?.text = it.cauHoi.trim()
             listQuestion.add(it.ansA!!.trim())
             listQuestion.add(it.ansB!!.trim())
             listQuestion.add(it.ansC!!.trim())
@@ -85,13 +100,55 @@ class CauHoiFragment : Fragment() {
             radioAdapter.submitList(listQuestion)
         }
 
+        shareViewModel.hashUserChoice[cauhoi?.questionNumber]?.let {
+            radioAdapter.positionSelected = it
+        }
+
         rcvQuestion?.apply {
             adapter = radioAdapter
             hasFixedSize()
         }
 
+        btnCauTraLoi?.setOnClickListener {
+//            shareViewModel.setChoiceAnswer()
+            shareViewModel.setAction(Action.Answer(cauhoi?.questionNumber!!, userAnsQuestion))
+        }
+
+        btnCauSau?.setOnClickListener {
+            shareViewModel.setAction(Action.Next(cauhoi?.questionNumber))
+        }
+
+        btnNopBai?.setOnClickListener {
+
+            showDialog("Nộp bài")
+        }
+
+
+
 
         return view
+    }
+
+    private fun showDialog(titleId: String) {
+
+
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle(titleId)
+            setMessage("Bạn có chắc chắn muốn nộp bài không?")
+            setNegativeButton("Có") { dialog, p1 ->
+
+                dialog.dismiss()
+                val intent = Intent(requireContext(), ResultActivity::class.java)
+
+                intent.putExtra("socaudalam",shareViewModel.hashUserChoice.size)
+                startActivity(intent)
+                requireActivity().finish()
+
+            }
+            setPositiveButton("Không") { dialog, p1 ->
+                dialog.dismiss()
+            }
+        }.show()
     }
 
     companion object {

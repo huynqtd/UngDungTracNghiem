@@ -36,7 +36,6 @@ class MainActivity : AppCompatActivity() {
 
 
         doduLieu = ItemQuestionAdapter(danhsachCH) { cauhoi ->
-            Toast.makeText(this, "$cauhoi", Toast.LENGTH_SHORT).show()
             hienThiNoiDungCauHoi(cauhoi)
         }
         tvData = findViewById(R.id.tv_test)
@@ -65,6 +64,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 is Action.Answer -> {
                     shareViewModel.setChoiceAnswer(it.data, it.ans)
+                    shareViewModel.setAction(Action.Next(it.data!!))
                 }
                 is Action.Finish -> {
 

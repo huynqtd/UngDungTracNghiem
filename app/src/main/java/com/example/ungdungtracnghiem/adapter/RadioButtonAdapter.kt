@@ -8,11 +8,16 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ungdungtracnghiem.R
 import com.example.ungdungtracnghiem.Question
+import com.example.ungdungtracnghiem.ShareViewModel
 
-class RadioButtonAdapter() :
+class RadioButtonAdapter(
+    private val onClick: (Int) -> Unit,
+) :
     RecyclerView.Adapter<RadioButtonAdapter.RadioButtonViewHolder>() {
 
+
     private val question: MutableList<String> = mutableListOf()
+    var positionSelected = -1
 
     fun submitList(it: List<String>) {
         question.clear()
@@ -28,6 +33,16 @@ class RadioButtonAdapter() :
 
         fun binding(data: String, position: Int) {
             tvQuestion.text = data
+
+            rbQuestion.isChecked = (positionSelected == position)
+
+            rbQuestion.setOnCheckedChangeListener { compoundButton, b ->
+
+                if (b) {
+                    positionSelected = position
+                    onClick(position)
+                }
+            }
         }
     }
 
