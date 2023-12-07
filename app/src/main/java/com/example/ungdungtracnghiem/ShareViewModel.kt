@@ -16,12 +16,23 @@ class ShareViewModel : ViewModel() {
 
     val actionScreen: LiveData<Action> = _actionScreen
 
-
+    val listAnswerCorrect: MutableList<Int> = mutableListOf()
     fun setChoiceAnswer(data: Int?, ans: Int?) {
         data?.let {
             hashUserChoice[data] = ans ?: -1
         }
     }
+
+    fun getCorrectUserAnswer(): Int {
+        var correct = 0
+        listAnswerCorrect.forEachIndexed { cauhoithu, dapandung ->
+            if (hashUserChoice[cauhoithu + 1] == dapandung) {
+                correct++
+            }
+        }
+        return correct
+    }
+
 
     fun setAction(action: Action) {
         _actionScreen.postValue(action)

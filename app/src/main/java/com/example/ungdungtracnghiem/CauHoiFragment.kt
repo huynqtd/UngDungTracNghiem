@@ -123,9 +123,6 @@ class CauHoiFragment : Fragment() {
             showDialog("Nộp bài")
         }
 
-
-
-
         return view
     }
 
@@ -141,6 +138,8 @@ class CauHoiFragment : Fragment() {
                 val intent = Intent(requireContext(), ResultActivity::class.java)
 
                 intent.putExtra("socaudalam",shareViewModel.hashUserChoice.size)
+                intent.putExtra("socautraloidung",shareViewModel.getCorrectUserAnswer())
+
                 startActivity(intent)
                 requireActivity().finish()
 

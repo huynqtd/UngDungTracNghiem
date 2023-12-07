@@ -1,5 +1,6 @@
 package com.example.ungdungtracnghiem.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,19 +15,24 @@ class ItemQuestionAdapter(
     private val onClioc: (Question) -> Unit
 ) : RecyclerView.Adapter<ItemQuestionAdapter.GiaoDienCauHoi>() {
 
+    var hashQuestionAnswer = hashMapOf<Int, Boolean>()
     // Giao diện ánh xạ và đổ dữ liệu lên giao diện
     inner class GiaoDienCauHoi(private val view: View) : RecyclerView.ViewHolder(view) {
 
-        var tvCauHoi: TextView
-
-        //Ánh xạ
-        init {
-            tvCauHoi = view.findViewById(R.id.tv_question)
-        }
+        var tvCauHoi: TextView = view.findViewById(R.id.tv_question)
 
         // Đổ dữ liệu
-        fun bind(cauhoi: Question) {
+        fun bind(cauhoi: Question, position: Int) {
             tvCauHoi.text = cauhoi.idCauhoi
+
+//            println("postion = $adapterPosition")
+
+            if (hashQuestionAnswer[position] == true ){
+                tvCauHoi.setBackgroundResource(R.drawable.background_answered)
+            }else {
+                tvCauHoi.setBackgroundResource(R.drawable.background_cauhoi)
+
+            }
 
             view.setOnClickListener {
                 onClioc(cauhoi)
@@ -43,10 +49,11 @@ class ItemQuestionAdapter(
     }
 
     override fun getItemCount(): Int { // 50 câu
+        println("size=${danhsach.size}")
         return danhsach.size
     }
 
     override fun onBindViewHolder(holder: GiaoDienCauHoi, position: Int) {
-        holder.bind(danhsach[position])
+        holder.bind(danhsach[position], position)
     }
 }

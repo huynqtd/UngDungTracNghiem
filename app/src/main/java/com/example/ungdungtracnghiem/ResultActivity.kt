@@ -20,9 +20,10 @@ class ResultActivity : AppCompatActivity() {
 
         val data = intent.getIntExtra("socaudalam",-1)
 
+        val caudung = intent.getIntExtra("socautraloidung",-1)
 
 
         tvResult?.text = "Số câu đã trả lời: $data/60"
-        tvCorrect?.text = "Số câu trả lời đúng: "
+        tvCorrect?.text = "Số câu trả lời đúng: $caudung "
     }
 }

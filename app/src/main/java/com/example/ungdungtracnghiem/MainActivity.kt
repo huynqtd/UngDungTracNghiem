@@ -63,8 +63,16 @@ class MainActivity : AppCompatActivity() {
 
                 }
                 is Action.Answer -> {
-                    shareViewModel.setChoiceAnswer(it.data, it.ans)
-                    shareViewModel.setAction(Action.Next(it.data!!))
+
+                    if(it.data!! != 62) {
+
+                        shareViewModel.setChoiceAnswer(it.data, it.ans)
+                        doduLieu?.hashQuestionAnswer?.put(it.data!! - 1, true)
+                        doduLieu?.notifyItemChanged(it.data!! - 1)
+                        if (it.data!! != 61) {
+                            shareViewModel.setAction(Action.Next(it.data!!))
+                        }
+                    }
                 }
                 is Action.Finish -> {
 
@@ -84,6 +92,14 @@ class MainActivity : AppCompatActivity() {
                     val dapanB = objJson.getString("dapanB")
                     val dapanC = objJson.getString("dapanC")
                     val dapanD = objJson.getString("dapanD")
+                    val dananDung = objJson.getString("dapandung")
+                    if (dananDung == "A") shareViewModel.listAnswerCorrect.add(0)
+                    else if (dananDung == "B") shareViewModel.listAnswerCorrect.add(1)
+                    else if (dananDung == "C") shareViewModel.listAnswerCorrect.add(2)
+                    else if (dananDung == "D") shareViewModel.listAnswerCorrect.add(3)
+
+
+
                     danhsachCH.add(
                         Question(
                             idCauhoi = "Câu ${i + 1}",
