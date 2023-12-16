@@ -7,3 +7,9 @@ data class User(
     var name: String,
     var address : String
 )
+
+data class Account(
+    val tenDangNhap: String ="",
+    val matKhau: String = "",
+    val sodienthoai: String = ""
+)
